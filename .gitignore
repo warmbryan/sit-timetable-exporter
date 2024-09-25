@@ -1,0 +1,6 @@
+.venv
+.vscode
+
+*.ics
+
+.DS_STORE
