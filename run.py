@@ -87,35 +87,26 @@ class SIT_TIMETABLE_EXPORTER:
         courseMgmtBtn = self.__driver.find_element(By.ID, "win0divPTNUI_LAND_REC_GROUPLET$1")
         courseMgmtBtn.click()
 
-        self.__waitQuick.until(EC.visibility_of_element_located((By.ID, "win0divSSR_SBJCT_LVL1_row$0")))
-
         # My Weekly Schedule
-        mwsBtn = self.__waitQuick.until(EC.element_to_be_clickable((By.ID, "win2divPTGP_STEP_DVW_PTGP_STEP_LABEL$1")))
+        mwsBtn = self.__waitLong.until(EC.element_to_be_clickable((By.ID, "win1div$ICField$11$$1")))
         mwsBtn.click()
 
         scheduleFrame = self.__waitQuick.until(EC.frame_to_be_available_and_switch_to_it((By.ID, "main_target_win0")))
 
         print("waited, lets go, switched frame:", scheduleFrame)
 
+        # Select Display Option: "List View" radio button
         lvRadioBtn = self.__driver.find_element(By.XPATH, '//*[@id="DERIVED_REGFRM1_SSR_SCHED_FORMAT$258$"]')
         lvRadioBtn.click()
 
-        self.__waitQuick.until(EC.visibility_of_element_located((By.ID, "win0divSSR_DUMMY_RECV1GP$0")))
+        # modules show up
+        self.__waitQuick.until(EC.visibility_of_element_located((By.ID, "win0divSSR_DUMMY_RECVW$0")))
 
-        semesters = self.__driver.find_elements(By.XPATH, "/html/body/form/div[5]/table/tbody/tr/td/div/table/tbody/tr[4]/td[2]/div/table/tbody/tr[2]/td/table/tbody/tr[position()>1]")
-
-        semesters[-1].find_element(By.XPATH, "td[1]/div/input").click()
-        semesterInfo = semesters[-1].find_elements(By.XPATH, "td[position()>1]/div/span")
-        semesterInfo = [s.text for s in semesterInfo]
-
-        # print(" | ".join(semesterInfo))
-
-        continueBtn = self.__waitQuick.until(EC.element_to_be_clickable((By.ID, "DERIVED_SSS_SCT_SSR_PB_GO")))
-        continueBtn.click()
-
+        # find semester label
         semesterLabel = self.__waitLong.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "#DERIVED_REGFRM1_SSR_STDNTKEY_DESCR\$11\$")))
         print(semesterLabel.text)
 
+        # find all semester table
         modules = self.__driver.find_elements(By.XPATH, "/html/body/form/div[5]/table/tbody/tr/td/div/table/tbody/tr[10]/td[2]/div/table/tbody/tr/td/div/table")
 
         for module in modules:
@@ -172,5 +163,5 @@ userPw = getpass("SIT Account Password: ")
 
 exporter = SIT_TIMETABLE_EXPORTER(userEmail, userPw, headless=False)
 exporter.get_timetable()
-exporter.export("sem1-timetable")
+exporter.export("sem2-timetable")
 exporter.cleanup()
